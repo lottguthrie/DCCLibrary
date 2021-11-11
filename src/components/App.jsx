@@ -1,67 +1,36 @@
 import React, { Component } from 'react';
 import './App.css'
-import TitleBar from './TitleBar/TitleBar';
+import axios from 'axios'
+import DisplayMusic from './DisplayMusic/DisplayMusic';
 
 class App extends Component{
     constructor(props){
         super(props)
-        this.books = [
-            {title: "Ready Player One", author: "Ernest Cline"},
-            {title: 'All the light We cannot See', author: 'Anthony Doerr'},
-            {title: 'The First and Last Freedom', author: 'Jiddu Krishnamurit'}
-        ];
-        this.state = {
-            bookNumber: 0
-        };
+        this.state = [];
     }
 
-    goToNextBook= () => {
-        let tempBookNumber = this.state.bookNumber;
-        tempBookNumber++;
-        if (tempBookNumber === this.books.length) {
-            tempBookNumber = 0;
-        }
-        this.setState({
-            bookNumber: tempBookNumber
-        });
+    componentDidMount(){
+        this.getAllSongs();
     }
 
-    goToPreviousBook = () => {
-        let tempBookNumber = this.state.bookNumber;
-        tempBookNumber++;
-        if(tempBookNumber < 0){
-            tempBookNumber = this.books.length -1;
-        }
-        this.setState({
-            bookNumber: tempBookNumber
-        });
-    }
+async getAllSongs(){
+    let response = await axios.get('http://127.0.0.1:8000/music/');
+    console.log(response.data)
+    this.setState({
+        songs:response.data
+    });
+}
 
 
 render() {
     return (
-        <div className="container-fluid">
-            <TitleBar />
-            <div className="row">
-                <div className="col-md-4">
-                    {/*Button here to move to the previous book viewed*/}
-                    <button onClick={this.goToPreviousBook}>Previous Book</button>
-                    </div>
-                <div className="col-md-4">
-                    {/*Display book with cover here*/}
-                    <h1>{this.books[this.state.bookNumber].title}</h1>
-                    <h4>{this.books[this.state.bookNumber].author}</h4>
-                </div>
-                <div className="col-md-4">
-                    {/*Button here to move to next book to be viewed*/}
-                    <button onClick={}
-                </div>
-            </div>
-
-            
+        <div>
+            <h1>Song Display</h1>
+            <DisplayMusic songs={this.state.songs} />
         </div>
-    )
+    );
 }
 }
+
 
 export default App;
